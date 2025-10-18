@@ -1,9 +1,7 @@
 import sys
 import numpy as np
-from scipy import signal
 from pathlib import Path
 from typing import Tuple, Optional
-from logging import Logger
 import soundfile
 import librosa
 
