@@ -103,6 +103,41 @@ class TelephoneAudioProcess:
     
         return processed, self.target_sr
 
+    def add_telephone_noise(self, noise_level=0.005, hum_frequency=60, 
+                           add_hum=True, add_white_noise=True, add_crackle=True):
+        "Add authentic old telephone noise to the audio."
+        duration = len(self.telephone_data)
+        
+        # 1. White noise (static/hiss)
+        if add_white_noise:
+            white_noise = np.random.normal(0, noise_level * 0.3, duration)
+            self.telephone_data += white_noise
+        print("Applied white noise.")
+
+
+        # 2. Electrical hum (60Hz or 50Hz)
+        if add_hum:
+            t = np.arange(duration) / self.sample_rate
+            hum = noise_level * 0.5 * np.sin(2 * np.pi * hum_frequency * t)
+            # Add some harmonics for realism
+            hum += noise_level * 0.2 * np.sin(2 * np.pi * (hum_frequency * 2) * t)
+            self.telephone_data += hum
+        print("Applied electric hum.")
+        
+        # 3. Crackle/pops (random impulses)
+        if add_crackle:
+            # Random crackles (about 5 per second)
+            num_crackles = int(duration / self.sample_rate * 5)
+            crackle_positions = np.random.randint(0, duration, num_crackles)
+            
+            for pos in crackle_positions:
+                # Create a short impulse
+                crackle_length = np.random.randint(5, 20)
+                if pos + crackle_length < duration:
+                    amplitude = np.random.uniform(noise_level * 2, noise_level * 8)
+                    self.telephone_data[pos:pos+crackle_length] += amplitude * np.random.randn(crackle_length)
+        print("Applied crackle.")
+
     def save_audio(self, output_filename: str = None):
         """
         Save processed audio to file.
@@ -125,6 +160,7 @@ class TelephoneAudioProcess:
 
         self.load_audio(input_path)
         self.process_audio_array(self.audio_data, self.sample_rate)
+        self.add_telephone_noise()
         self.save_audio(output)
 
 
