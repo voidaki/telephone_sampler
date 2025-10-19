@@ -96,10 +96,10 @@ class TelephoneAudioProcess:
             hop_length=self.hop_size,
             win_length=self.window_size
         )
-        self.telephone_data = processed
+        self.telephone_data = 1.3*processed
         print(f"Processed the audio file back into array format.")
     
-        return processed, self.target_sr
+        return self.telephone_data, self.target_sr
 
     def add_telephone_noise(self, noise_level=0.005, hum_frequency=60, 
                            add_hum=True, add_white_noise=True, add_crackle=True):
@@ -166,7 +166,7 @@ if __name__ == "__main__":
     if len(sys.argv) != 3:
         raise ValueError("Usage: telephone.py works as: python telephone.py infile.wav outfile.wav")
     else:
-        infile = sys.argv[1]
+        infile = "inputs/" + sys.argv[1]
         outfile = sys.argv[2]
         telephone_processer = TelephoneAudioProcess()
 
