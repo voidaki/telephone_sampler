@@ -1,3 +1,4 @@
+# author: github.com/voidaki
 import sys
 import numpy as np
 from pathlib import Path
